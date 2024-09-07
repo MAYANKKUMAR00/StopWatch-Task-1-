@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Stopwatch</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background-color: #f0f0f0;
+    }
+
+    .stopwatch {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+
+    #timer {
+      font-size: 3em;
+      margin-bottom: 20px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 1em;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <div class="stopwatch">
+    <h2 id="timer">00:00:00</h2>
+    <button id="start">Start</button>
+    <button id="pause">Pause</button>
+    <button id="reset">Reset</button>
+    <br>
+    <button id="lap">Lap</button>
+    <ul id="lapTimes"></ul>
+  </div>
+
+  <script>
+    let startTime = 0;
+    let intervalId;
+    let lapTime = 0;
+
+    const timer = document.getElementById('timer');
+    const startButton = document.getElementById('start');
+    const pauseButton = document.getElementById('pause');
+    const resetButton = document.getElementById('reset');
+    const lapButton = document.getElementById('lap');
+    const lapTimesList = document.getElementById('lapTimes');
+
+    function formatTime(time) {
+      const minutes = Math.floor(time / 60000);
+      const seconds = Math.floor((time % 60000) / 1000);
+      const milliseconds = Math.floor((time % 1000) / 10);
+
+      return ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}:${milliseconds.toString().padStart(2, '0')};
+    }
+
+    function startTimer() {
+      startTime = new Date().getTime();
+      intervalId = setInterval(() => {
+        const currentTime = new Date().getTime();
+        const elapsedTime = currentTime - startTime;
+        timer.textContent = formatTime(elapsedTime);
+      }, 10);
+    }
+
+    function pauseTimer() {
+      clearInterval(intervalId);
+    }
+
+    function resetTimer() {
+      clearInterval(intervalId);
+      startTime = 0;
+      lapTime = 0;
+      timer.textContent = '00:00:00';
+      lapTimesList.innerHTML = '';
+    }
+
+    function lapTimer() {
+      const currentTime = new Date().getTime();
+      const lap = currentTime - startTime;
+      lapTime += lap;
+
+      const lapItem = document.createElement('li');
+      lapItem.textContent = Lap ${lapTimesList.children.length + 1}: ${formatTime(lapTime)};
+      lapTimesList.appendChild(lapItem);
+    }
+
+    startButton.addEventListener('click', startTimer);
+    pauseButton.addEventListener('click', pauseTimer);
+    resetButton.addEventListener('click', resetTimer);
+    lapButton.addEventListener('click', lapTimer);
+  </script>
+</body>
+</html>
